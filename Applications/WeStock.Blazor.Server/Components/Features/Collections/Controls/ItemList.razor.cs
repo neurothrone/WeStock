@@ -1,14 +1,18 @@
 using Microsoft.AspNetCore.Components;
+using WeStock.Blazor.Server.State;
 using WeStock.Blazor.Server.Utils;
 using WeStock.Blazor.Server.ViewModels.Items;
 using WeStock.SL.Interfaces;
 
 namespace WeStock.Blazor.Server.Components.Features.Collections.Controls;
 
-public partial class ItemList
+public partial class ItemList : IDisposable
 {
     [Parameter, EditorRequired]
     public required int SectionId { get; set; }
+
+    [Inject]
+    private AppState AppState { get; set; } = null!;
 
     [Inject]
     private IItemService ItemService { get; set; } = null!;
@@ -17,9 +21,16 @@ public partial class ItemList
 
     protected override async Task OnInitializedAsync()
     {
+        AppState.OnDataChanged += LoadItems;
+        await LoadItems();
+    }
+
+    private async Task LoadItems()
+    {
         _items = (await ItemService.RetrieveItemsBySectionIdAsync(SectionId))
             .Select(itemDto => itemDto.MapToViewModel())
             .ToList();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task RemoveItemFromSection(ItemViewModel item)
@@ -28,7 +39,7 @@ public partial class ItemList
         if (removed)
             _items?.Remove(item);
     }
-    
+
     public async Task AddItemToSection(ItemViewModel item)
     {
         if (_items is null)
@@ -49,6 +60,7 @@ public partial class ItemList
             var itemDto = await ItemService.CreateItemAsync(item.MapToCreateDto());
             _items?.Add(itemDto.MapToViewModel());
         }
+
         StateHasChanged();
     }
 
@@ -60,4 +72,13 @@ public partial class ItemList
 
         _items?.Remove(item);
     }
+
+    #region IDisposable
+
+    public void Dispose()
+    {
+        AppState.OnDataChanged -= LoadItems;
+    }
+
+    #endregion
 }
