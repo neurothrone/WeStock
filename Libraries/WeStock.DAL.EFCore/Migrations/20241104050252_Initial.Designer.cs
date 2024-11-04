@@ -10,7 +10,7 @@ using WeStock.DAL.EFCore.Data;
 namespace WeStock.DAL.EFCore.Migrations
 {
     [DbContext(typeof(WeStockDbContext))]
-    [Migration("20241103131602_Initial")]
+    [Migration("20241104050252_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -42,6 +42,7 @@ namespace WeStock.DAL.EFCore.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -57,6 +58,7 @@ namespace WeStock.DAL.EFCore.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Quantity")
@@ -81,6 +83,7 @@ namespace WeStock.DAL.EFCore.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

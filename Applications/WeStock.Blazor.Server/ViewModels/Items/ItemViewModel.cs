@@ -22,5 +22,4 @@ public class ItemViewModel
     // TODO: Price?, HasPrice?
     // [Range(typeof(decimal), "0", "9999")]
     // public decimal Price { get; set; }
-    // public decimal? Price { get; set; }
 }

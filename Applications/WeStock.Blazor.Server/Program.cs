@@ -102,6 +102,7 @@ else
     builder.Services.AddScoped<IItemManager, ItemManager>();
 
     // DAL
+    // Source: https://learn.microsoft.com/en-us/aspnet/core/blazor/blazor-ef-core?view=aspnetcore-8.0#enable-sensitive-data-logging
 #if DEBUG
     builder.Services.AddDbContextFactory<WeStockDbContext>(options =>
     {
