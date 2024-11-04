@@ -1,0 +1,14 @@
+@page "/collections/details"
+@rendermode InteractiveServer
+
+<PageTitle>@(_collection?.Name ?? "Unknown")</PageTitle>
+
+@if (_collection is null)
+{
+    <CenteredCircularIndicator/>
+}
+else
+{
+    <h3>@(_collection?.Name ?? "Unknown") - Total items: @_totalItemCount</h3>
+    <SectionList Collection="_collection"/>
+}

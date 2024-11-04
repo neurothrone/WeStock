@@ -1,0 +1,57 @@
+@page "/sections"
+@rendermode InteractiveServer
+
+<PageTitle>Sections</PageTitle>
+<h3>Sections</h3>
+
+@if (_sections is null)
+{
+    <CenteredCircularIndicator/>
+}
+else if (_sections.Count == 0)
+{
+    <p>No sections available.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @* ReSharper disable once UnusedParameter.Local *@
+            <Virtualize Items="_sections" Context="section">
+                <ItemContent>
+                    <tr @key="section.Id">
+                        <td>@(section.Id)</td>
+                        <td>@(section.Name)</td>
+                        <td>
+                            <a href=@($"/sections/details?id={section.Id}")
+                               class="btn btn-primary">
+                                Details
+                            </a>
+                            <a href=@($"/sections/edit?id={section.Id}")
+                               class="btn btn-warning">
+                                Edit
+                            </a>
+                            <button type="button"
+                                    class="btn btn-danger"
+                                    @onclick="() => DeleteSection(section)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                </ItemContent>
+                <Placeholder>
+                    <tr>
+                        <CenteredCircularIndicator/>
+                    </tr>
+                </Placeholder>
+            </Virtualize>
+        </tbody>
+    </table>
+}

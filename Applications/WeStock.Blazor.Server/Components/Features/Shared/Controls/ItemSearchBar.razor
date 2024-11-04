@@ -1,0 +1,14 @@
+<input class="form-control"
+       placeholder="Search items by name"
+       @bind-value="_searchText"
+       @bind-value:event="oninput"
+       @bind-value:after="() => OnSearched.InvokeAsync(_searchText)"/>
+
+@code {
+
+    [Parameter]
+    public EventCallback<string> OnSearched { get; set; }
+
+    private string _searchText = string.Empty;
+
+}

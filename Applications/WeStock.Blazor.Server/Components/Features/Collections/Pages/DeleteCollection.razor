@@ -1,0 +1,31 @@
+@page "/collections/delete"
+@rendermode InteractiveServer
+
+<PageTitle>Delete Collection</PageTitle>
+<h3>Delete Collection</h3>
+
+@if (_busy)
+{
+    <CenteredCircularIndicator/>
+}
+else
+{
+    <p>Are you sure you want to delete your Collection?</p>
+    @if (_sectionsCount > 0)
+    {
+        <DeleteSectionCount SectionCount="_sectionsCount"/>
+    }
+
+    <div class="d-flex justify-content-start my-3">
+        <button type="button"
+                class="btn btn-danger me-3"
+                @onclick="Delete">
+            Delete
+        </button>
+        <button type="button"
+                class="btn btn-secondary"
+                @onclick="NavigateBack">
+            Cancel
+        </button>
+    </div>
+}

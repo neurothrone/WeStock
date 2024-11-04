@@ -1,0 +1,24 @@
+@page "/items"
+@rendermode InteractiveServer
+
+@using WeStock.Blazor.Server.Components.Features.Items.Controls
+
+<PageTitle>Items</PageTitle>
+<h3>Items</h3>
+
+<h4>Add Item</h4>
+<div class="card mb-3">
+    <div class="card-body">
+        <ItemForm OnItemCreated="AddItem"/>
+    </div>
+</div>
+
+<h4>Search Items</h4>
+
+<ItemSearchBar OnSearched="SearchItems"/>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <ItemSearchResults SearchText="@_searchText"/>
+    </div>
+</div>

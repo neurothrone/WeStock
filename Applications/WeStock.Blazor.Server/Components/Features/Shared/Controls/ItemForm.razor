@@ -1,0 +1,42 @@
+<EditForm Model="_newItem"
+          OnValidSubmit="CreateItem">
+    <DataAnnotationsValidator/>
+
+    <div class="form-group mb-3">
+        <label for="name">Name</label>
+        <CustomInputText id="name"
+                         class="form-control"
+                         autofocus
+                         @bind-Value="_newItem.Name"/>
+        <ValidationMessage For="() => _newItem.Name"/>
+    </div>
+
+    <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <InputNumber id="quantity"
+                     class="form-control"
+                     @bind-Value="_newItem.Quantity"/>
+        <ValidationMessage For="() => _newItem.Quantity"/>
+    </div>
+
+    <div class="row row-cols-auto my-3">
+        <div class="col">
+            <button type="submit"
+                    class="btn btn-primary"
+                    disabled="@(!_newItem.IsValid)">
+                Create Item
+            </button>
+
+        </div>
+        @if (OnCancelClicked.HasDelegate)
+        {
+            <div class="col">
+                <button type="button"
+                        class="btn btn-secondary"
+                        @onclick="Cancel">
+                    Cancel
+                </button>
+            </div>
+        }
+    </div>
+</EditForm>

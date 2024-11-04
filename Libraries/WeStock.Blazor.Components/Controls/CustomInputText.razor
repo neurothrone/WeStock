@@ -1,0 +1,4 @@
+@inherits Microsoft.AspNetCore.Components.Forms.InputText
+
+<input @bind="@CurrentValueAsString" @bind:event="oninput"
+       class="@CssClass" @attributes="@AdditionalAttributes"/>

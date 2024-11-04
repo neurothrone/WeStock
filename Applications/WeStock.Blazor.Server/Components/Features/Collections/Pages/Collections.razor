@@ -1,0 +1,25 @@
+@page "/"
+@page "/collections"
+@rendermode InteractiveServer
+
+<PageTitle>Collections</PageTitle>
+<h3>Collections</h3>
+
+<a href="/collections/create"
+   class="btn btn-primary mb-3">
+    Create
+</a>
+
+@if (_collections is null)
+{
+    <CenteredCircularIndicator/>
+}
+else if (!_collections.Any())
+{
+    <p>No collections available.</p>
+}
+else
+{
+    <CollectionsGrid Collections="_collections"
+                     CollectionsPerPage="6"/>
+}

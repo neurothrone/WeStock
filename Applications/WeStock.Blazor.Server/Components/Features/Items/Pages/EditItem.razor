@@ -1,0 +1,47 @@
+@page "/items/edit"
+@rendermode InteractiveServer
+
+<PageTitle>Edit Item</PageTitle>
+
+@if (_item is null)
+{
+    <CenteredCircularIndicator/>
+}
+else
+{
+    <h3>Edit Item</h3>
+
+    <EditForm Model="_item"
+              OnValidSubmit="UpdateItem">
+        <DataAnnotationsValidator/>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <InputText id="name"
+                       class="form-control"
+                       @bind-Value="_item.Name"/>
+            <ValidationMessage For="() => _item.Name"/>
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <InputNumber id="quantity"
+                         class="form-control"
+                         @bind-Value="_item.Quantity"/>
+            <ValidationMessage For="() => _item.Quantity"/>
+        </div>
+
+        <div class="d-flex justify-content-start my-3">
+            <button type="submit"
+                    class="btn btn-primary me-3"
+                    disabled="@(!_item.IsValid)">
+                Save
+            </button>
+            <button type="button"
+                    class="btn btn-secondary"
+                    @onclick="NavigateBack">
+                Cancel
+            </button>
+        </div>
+    </EditForm>
+}

@@ -1,0 +1,46 @@
+@rendermode InteractiveServer
+@using WeStock.Blazor.Server.State
+
+<span>You have <span>@_collectionCount</span> Collections, <span>@_sectionCount</span> Sections and <span>@_itemCount</span> Items in total.</span>
+
+@code {
+
+    [Inject]
+    private AppState AppState { get; set; } = null!;
+
+    private int _collectionCount;
+    private int _sectionCount;
+    private int _itemCount;
+
+    protected override void OnInitialized()
+    {
+        _collectionCount = AppState.CollectionCount;
+        _sectionCount = AppState.SectionCount;
+        _itemCount = AppState.ItemCount;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        AppState.OnCollectionCountChanged = async collectionCount =>
+        {
+            _collectionCount = collectionCount;
+            await InvokeAsync(StateHasChanged);
+        };
+
+        AppState.OnSectionCountChanged = async sectionCount =>
+        {
+            _sectionCount = sectionCount;
+            await InvokeAsync(StateHasChanged);
+        };
+
+        AppState.OnItemCountChanged = async itemCount =>
+        {
+            _itemCount = itemCount;
+            await InvokeAsync(StateHasChanged);
+        };
+    }
+
+}

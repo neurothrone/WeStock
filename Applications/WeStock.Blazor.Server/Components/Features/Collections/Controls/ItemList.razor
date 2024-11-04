@@ -1,0 +1,47 @@
+@if (_items is null)
+{
+    <CenteredCircularIndicator/>
+}
+else if (_items.Count == 0)
+{
+    <p>No items available.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="px-0">Item ID</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in _items)
+            {
+                <tr @key="item.Id">
+                    <td class="px-0">@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Quantity</td>
+                    <td class="text-end pe-0">
+                        <button type="button"
+                                class="btn btn-primary me-2"
+                                @onclick="() => RemoveItemFromSection(item)">
+                            Remove
+                        </button>
+                        <a href=@($"/items/edit?id={item.Id}")
+                           class="btn btn-warning me-2">
+                            Edit
+                        </a>
+                        <button type="button"
+                                class="btn btn-danger"
+                                @onclick="() => DeleteItem(item)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

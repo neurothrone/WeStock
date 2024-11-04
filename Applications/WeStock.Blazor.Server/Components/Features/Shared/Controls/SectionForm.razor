@@ -1,0 +1,18 @@
+<EditForm Model="_newSection"
+          OnValidSubmit="CreateSection">
+    <DataAnnotationsValidator/>
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <CustomInputText id="name"
+                         class="form-control"
+                         @bind-Value="_newSection.Name"/>
+        <ValidationMessage For="() => _newSection.Name"/>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary my-3"
+            disabled="@(!_newSection.IsValid)">
+        Create Section
+    </button>
+</EditForm>

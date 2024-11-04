@@ -1,0 +1,85 @@
+<div class="card mb-3">
+    <div class="card-body">
+        <h5>Add Section</h5>
+
+        <SectionForm OnSectionCreated="AddSection"/>
+    </div>
+</div>
+
+<h4>Sections</h4>
+
+@if (_sections is null)
+{
+    <CenteredCircularIndicator/>
+}
+else if (_sections.Count == 0)
+{
+    <p>No sections available.</p>
+}
+else
+{
+    @* ReSharper disable once UnusedParameter.Local *@
+    <Virtualize Items="_sections" Context="section">
+        <ItemContent>
+            <div @key="section.Id"
+                 class="card mb-3">
+                <div class="card-body">
+                    <h5>@(section.Name)</h5>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        @if (section.Id == _selectedSection?.Id)
+                        {
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    disabled>
+                                Selected
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    @onclick="() => _selectedSection = section">
+                                Select
+                            </button>
+                        }
+
+                        <div>
+                            <a href=@($"/sections/details?id={section.Id}")
+                               class="btn btn-primary me-2">
+                                Details
+                            </a>
+                            <a href=@($"/sections/edit?id={section.Id}")
+                               class="btn btn-warning me-2">
+                                Edit
+                            </a>
+                            <button type="button"
+                                    class="btn btn-danger"
+                                    @onclick="() => DeleteSection(section)">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+
+                    @if (section.Id == _selectedSection?.Id)
+                    {
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5>Add Item</h5>
+
+                                <ItemForm OnItemCreated="AddItem"
+                                          OnCancelClicked="() => _selectedSection = null"/>
+                            </div>
+                        </div>
+                    }
+
+                    <ItemList @ref="_itemListReferences[section.Id]"
+                              SectionId="section.Id"/>
+                </div>
+            </div>
+        </ItemContent>
+        <Placeholder>
+            <CenteredCircularIndicator/>
+        </Placeholder>
+    </Virtualize>
+}

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Libraries\WeStock.Blazor.Components\WeStock.Blazor.Components.csproj" />
+      <ProjectReference Include="..\..\Libraries\WeStock.BLL.EFCore\WeStock.BLL.EFCore.csproj" />
+      <ProjectReference Include="..\..\Libraries\WeStock.BLL.InMemory\WeStock.BLL.InMemory.csproj" />
+      <ProjectReference Include="..\..\Libraries\WeStock.DAL.EFCore\WeStock.DAL.EFCore.csproj" />
+      <ProjectReference Include="..\..\Libraries\WeStock.DAL.InMemory\WeStock.DAL.InMemory.csproj" />
+      <ProjectReference Include="..\..\Libraries\WeStock.SL\WeStock.SL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Layout\MainLayout.razor" />
+      <_ContentIncludedByDefault Remove="Components\Layout\NavMenu.razor" />
+      <_ContentIncludedByDefault Remove="Components\Core\Pages\Temp\Counter.razor" />
+      <_ContentIncludedByDefault Remove="Components\Core\Pages\Temp\Weather.razor" />
+      <_ContentIncludedByDefault Remove="Components\Core\Controls\CenteredCircularIndicator.razor" />
+      <_ContentIncludedByDefault Remove="Components\Core\Controls\CustomInputText.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="8.0.10" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
+    </ItemGroup>
+
+</Project>

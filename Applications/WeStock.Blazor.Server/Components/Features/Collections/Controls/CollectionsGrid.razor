@@ -1,0 +1,53 @@
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using WeStock.Blazor.Server.ViewModels.Collections
+
+<QuickGrid Class="table"
+           Items="Collections"
+           Pagination="_paginationState">
+    <PropertyColumn Property="collection => collection.Id"
+                    Sortable="true"
+                    Title="ID"
+                    Class="px-0 align-content-center"/>
+    <PropertyColumn Property="collection => collection.Name"
+                    Sortable="true"
+                    Title="Name"
+                    Class="px-0 align-content-center"/>
+    <TemplateColumn Context="collection"
+                    Title="Actions"
+                    Align="Align.Center"
+                    Class="pe-0">
+        <div class="text-end my-1">
+            <a href="/collections/details?id=@collection.Id"
+               class="btn btn-primary me-2">
+                Details
+            </a>
+            <a href="/collections/edit?id=@collection.Id"
+               class="btn btn-warning me-2">
+                Edit
+            </a>
+            <a href="/collections/delete?id=@collection.Id"
+               class="btn btn-danger">
+                Delete
+            </a>
+        </div>
+    </TemplateColumn>
+</QuickGrid>
+
+<Paginator State="_paginationState"/>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public required IQueryable<CollectionViewModel> Collections { get; set; }
+
+    [Parameter]
+    public int CollectionsPerPage { get; set; } = 4;
+
+    private readonly PaginationState _paginationState = new() { ItemsPerPage = 4 };
+
+    protected override void OnInitialized()
+    {
+        _paginationState.ItemsPerPage = CollectionsPerPage;
+    }
+
+}

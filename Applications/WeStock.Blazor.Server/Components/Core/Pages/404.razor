@@ -1,0 +1,32 @@
+@page "/404"
+
+<PageTitle>Not Found</PageTitle>
+<h3>Not Found</h3>
+
+<p>This is not the page you are looking for.</p>
+
+<div class="row row-cols-auto">
+    <div class="col">
+        <button type="button"
+                class="btn btn-primary"
+                @onclick="NavigateBack">
+            Back
+        </button>
+        <a href=""
+           class="btn btn-secondary">
+            Home
+        </a>
+    </div>
+</div>
+
+@code {
+
+    [Inject]
+    private IJSRuntime JsRuntime { get; set; } = null!;
+
+    private async Task NavigateBack()
+    {
+        await JsRuntime.InvokeVoidAsync("goBack");
+    }
+
+}

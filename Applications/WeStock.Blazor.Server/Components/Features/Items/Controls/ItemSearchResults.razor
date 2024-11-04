@@ -1,0 +1,49 @@
+@if (_items is null)
+{
+    <CenteredCircularIndicator/>
+}
+else if (_items.Count == 0)
+{
+    <p>No Items available.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @* ReSharper disable once UnusedParameter.Local *@
+            <Virtualize Items="_items" Context="item">
+                <ItemContent>
+                    <tr @key="item.Id">
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Quantity</td>
+                        <td>
+                            <a href=@($"/items/edit?id={item.Id}")
+                               class="btn btn-warning">
+                                Edit
+                            </a>
+                            <button type="button"
+                                    class="btn btn-danger"
+                                    @onclick="() => DeleteItem(item)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                </ItemContent>
+                <Placeholder>
+                    <tr>
+                        <CenteredCircularIndicator/>
+                    </tr>
+                </Placeholder>
+            </Virtualize>
+        </tbody>
+    </table>
+}

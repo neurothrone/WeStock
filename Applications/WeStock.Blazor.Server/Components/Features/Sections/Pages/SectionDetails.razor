@@ -1,0 +1,32 @@
+@page "/sections/details"
+@rendermode InteractiveServer
+
+@using WeStock.Blazor.Server.Components.Features.Collections.Controls
+@using WeStock.Blazor.Server.Components.Features.Sections.Controls
+
+<PageTitle>Section Details</PageTitle>
+<h3>Section Details</h3>
+
+@if (_section is null)
+{
+    <CenteredCircularIndicator/>
+}
+else
+{
+    <div class="form-group mb-3">
+        <label for="name">Name</label>
+        <input id="name"
+               class="form-control"
+               readonly
+               value="@_section.Name"/>
+    </div>
+
+    <h4>Items</h4>
+    <ItemList @ref="_itemList"
+              SectionId="_section.Id"/>
+
+    <h4>Search Items</h4>
+    <SectionSearchItems SectionId="_section.Id"
+                        OnItemAdded="AddItemToSection"
+                        OnItemDeleted="DeleteItem"/>
+}
