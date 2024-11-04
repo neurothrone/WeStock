@@ -70,20 +70,6 @@ public class ItemRepository : IItemRepository
         if (itemToUpdate is null)
             return false;
 
-        // Update section only if SectionId has changed.
-        if (item.SectionId != itemToUpdate.SectionId)
-        {
-            if (itemToUpdate.SectionId != 0)
-            {
-                var section = itemToUpdate.Sections.FirstOrDefault(s => s.Id == itemToUpdate.SectionId);
-                if (section is not null)
-                    itemToUpdate.Sections.Remove(section);
-            }
-
-            if (item.SectionId != 0)
-                await AddItemToSection(itemToUpdate, item.SectionId, context);
-        }
-
         itemToUpdate.Name = item.Name;
         itemToUpdate.Quantity = item.Quantity;
 
@@ -98,21 +84,36 @@ public class ItemRepository : IItemRepository
         return deletedRows > 0;
     }
 
+    public async Task<bool> AddItemToSection(IItemEntity item)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+        var fetchedItem = await context.Items
+            .FirstOrDefaultAsync(i => i.Id == item.Id);
+        if (fetchedItem is null)
+            return false;
+
+        if (!await AddItemToSection(fetchedItem, item.SectionId, context))
+            return false;
+
+        await context.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<bool> RemoveItemFromSection(IItemEntity item)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
-        var itemToUpdate = await context.Items
+        var fetchedItem = await context.Items
             .Include(i => i.Sections) // Ensure sections are loaded
             .FirstOrDefaultAsync(i => i.Id == item.Id);
 
-        if (itemToUpdate is null)
+        if (fetchedItem is null)
             return false;
 
-        var section = itemToUpdate.Sections.FirstOrDefault(s => s.Id == item.SectionId);
+        var section = fetchedItem.Sections.FirstOrDefault(s => s.Id == item.SectionId);
         if (section is null)
             return false;
 
-        itemToUpdate.Sections.Remove(section);
+        fetchedItem.Sections.Remove(section);
         await context.SaveChangesAsync();
 
         return true;
@@ -149,12 +150,15 @@ public class ItemRepository : IItemRepository
             .ToListAsync();
     }
 
-    private async Task AddItemToSection(ItemEntity item, int sectionId, WeStockDbContext context)
+    #endregion
+
+    private async Task<bool> AddItemToSection(ItemEntity item, int sectionId, WeStockDbContext context)
     {
         var section = await context.Sections.FindAsync(sectionId);
-        if (section is not null)
-            item.Sections.Add(section);
-    }
+        if (section is null)
+            return false;
 
-    #endregion
+        item.Sections.Add(section);
+        return true;
+    }
 }

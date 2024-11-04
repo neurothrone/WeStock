@@ -28,16 +28,19 @@ public partial class ItemList
         if (removed)
             _items?.Remove(item);
     }
-
+    
     public async Task AddItemToSection(ItemViewModel item)
     {
         if (_items is null)
             return;
 
         item.SectionId = SectionId;
-        if (_items.Exists(i => i.Id == item.Id))
+
+        var existingItem = await ItemService.RetrieveItemByIdAsync(item.Id);
+        if (existingItem is not null)
         {
-            var added = await ItemService.UpdateItemAsync(item.MapToDto());
+            // var added = await ItemService.UpdateItemAsync(item.MapToDto());
+            var added = await ItemService.AddItemToSection(item.MapToDto());
             if (added)
                 _items?.Add(item);
         }
@@ -46,7 +49,6 @@ public partial class ItemList
             var itemDto = await ItemService.CreateItemAsync(item.MapToCreateDto());
             _items?.Add(itemDto.MapToViewModel());
         }
-
         StateHasChanged();
     }
 

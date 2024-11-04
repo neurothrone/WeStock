@@ -61,6 +61,11 @@ public class ItemService : IItemService, IDisposable
         return deleted;
     }
 
+    public Task<bool> AddItemToSection(ItemDto item)
+    {
+        return _manager.AddItemToSection(item.MapToModel());
+    }
+
     public Task<bool> RemoveItemFromSection(ItemDto item)
     {
         return _manager.RemoveItemFromSection(item.MapToModel());

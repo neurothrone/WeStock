@@ -13,13 +13,15 @@ public class InMemoryItemRepository : IItemRepository
         _dataStore = dataStore;
     }
 
+    #region IItemRepository
+
     public Task<IItemEntity> CreateItemAsync(IItemEntity inMemoryItem)
     {
         inMemoryItem.Id = ++_dataStore.CurrentItemId;
         _dataStore.Items.Add(inMemoryItem);
 
         if (inMemoryItem.SectionId != 0)
-            AddItemToSection(inMemoryItem.Id, inMemoryItem.SectionId);
+            AddItemToSection(inMemoryItem);
 
         return Task.FromResult(inMemoryItem);
     }
@@ -31,8 +33,13 @@ public class InMemoryItemRepository : IItemRepository
 
     public Task<List<IItemEntity>> RetrieveItemsBySectionIdAsync(int sectionId)
     {
+        var itemIds = _dataStore.ItemSectionMapping
+            .Where(entry => entry.Value.Contains(sectionId))
+            .Select(entry => entry.Key)
+            .ToHashSet();
+
         return Task.FromResult(_dataStore.Items
-            .Where(item => item.SectionId == sectionId)
+            .Where(item => itemIds.Contains(item.Id))
             .ToList());
     }
 
@@ -42,26 +49,16 @@ public class InMemoryItemRepository : IItemRepository
             .FirstOrDefault(item => item.Id == itemId));
     }
 
-    public async Task<bool> UpdateItemAsync(IItemEntity inMemoryItem)
+    public Task<bool> UpdateItemAsync(IItemEntity inMemoryItem)
     {
-        var itemToUpdate = await RetrieveItemByIdAsync(inMemoryItem.Id);
+        var itemToUpdate = _dataStore.Items.FirstOrDefault(i => i.Id == inMemoryItem.Id);
         if (itemToUpdate is null)
-            return false;
-
-        // Update section mappings only if SectionId has changed.
-        if (inMemoryItem.SectionId != itemToUpdate.SectionId)
-        {
-            if (itemToUpdate.SectionId != 0)
-                RemoveItemFromSection(inMemoryItem.Id, itemToUpdate.SectionId);
-
-            if (inMemoryItem.SectionId != 0)
-                AddItemToSection(inMemoryItem.Id, inMemoryItem.SectionId);
-        }
+            return Task.FromResult(false);
 
         itemToUpdate.Name = inMemoryItem.Name;
         itemToUpdate.Quantity = inMemoryItem.Quantity;
 
-        return true;
+        return Task.FromResult(true);
     }
 
     public async Task<bool> DeleteItemByIdAsync(int itemId)
@@ -74,12 +71,33 @@ public class InMemoryItemRepository : IItemRepository
         return _dataStore.Items.Remove(itemToDelete);
     }
 
+    public Task<bool> AddItemToSection(IItemEntity item)
+    {
+        if (!_dataStore.ItemSectionMapping.ContainsKey(item.Id))
+            _dataStore.ItemSectionMapping[item.Id] = [];
+
+        var storedItem = _dataStore.Items.FirstOrDefault(i => i.Id == item.Id);
+        if (storedItem is null)
+            return Task.FromResult(false);
+
+        storedItem.SectionId = item.SectionId;
+        _dataStore.ItemSectionMapping[item.Id].Add(item.SectionId);
+
+        return Task.FromResult(true);
+    }
+
     public Task<bool> RemoveItemFromSection(IItemEntity item)
     {
         if (!_dataStore.ItemSectionMapping.ContainsKey(item.Id))
             return Task.FromResult(false);
 
         var removed = _dataStore.ItemSectionMapping[item.Id].Remove(item.SectionId);
+        if (removed)
+        {
+            var storedItem = _dataStore.Items.FirstOrDefault(i => i.Id == item.Id);
+            if (storedItem is not null)
+                storedItem.SectionId = 0;
+        }
 
         // Remove dictionary entry if there are no items in the list.
         if (_dataStore.ItemSectionMapping[item.Id].Count == 0)
@@ -146,23 +164,5 @@ public class InMemoryItemRepository : IItemRepository
         );
     }
 
-    private void AddItemToSection(int itemId, int sectionId)
-    {
-        if (!_dataStore.ItemSectionMapping.ContainsKey(itemId))
-            _dataStore.ItemSectionMapping[itemId] = [];
-
-        _dataStore.ItemSectionMapping[itemId].Add(sectionId);
-    }
-
-    private void RemoveItemFromSection(int itemId, int sectionId)
-    {
-        if (!_dataStore.ItemSectionMapping.ContainsKey(itemId))
-            return;
-
-        _dataStore.ItemSectionMapping[itemId].Remove(sectionId);
-
-        // Remove dictionary entry if there are no items in the list.
-        if (_dataStore.ItemSectionMapping[itemId].Count == 0)
-            _dataStore.ItemSectionMapping.Remove(itemId);
-    }
+    #endregion
 }

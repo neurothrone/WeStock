@@ -55,6 +55,11 @@ public class ItemManager : IItemManager
         return _repository.DeleteItemByIdAsync(itemId);
     }
 
+    public Task<bool> AddItemToSection(Item item)
+    {
+        return _repository.AddItemToSection(item.MapToEntity<ItemEntity>());
+    }
+
     public Task<bool> RemoveItemFromSection(Item item)
     {
         return _repository.RemoveItemFromSection(item.MapToEntity<ItemEntity>());
